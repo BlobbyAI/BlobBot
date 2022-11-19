@@ -1,5 +1,5 @@
-[openai-chat]
+[openai-profile]
 name = "blob"
 prompt = "blob is really friendly and jokes a lot"
-context = 2
-model = 3
+model = "text-davinci-002"
+conversation_buffer_size = 2
