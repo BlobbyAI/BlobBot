@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "blobby"
+version = "0.1.0"
+description = "based on https://www.npmjs.com/package/openai-chat/v/1.2.2"
+authors = ["devops117 <55235206+devops117@users.noreply.github.com>"]
+license = "GPLv3"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+openai = "^0.25.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
