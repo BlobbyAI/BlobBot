@@ -407,8 +407,8 @@ test = ["Cython (>=0.29.32,<0.30.0)", "aiohttp", "flake8 (>=3.9.2,<3.10.0)", "my
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.10"
-content-hash = "dd9de5c5e7c5e9cd921709bb7b6d97f7a1b80dc2de15db69b4348bf7e01168fd"
+python-versions = "^3.11"
+content-hash = "742d0b592f548c092b79cec6ba8663ebcef340bc0631e2c33b064bb6d30be320"
 
 [metadata.files]
 anyio = [
