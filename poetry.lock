@@ -397,7 +397,7 @@ name = "uvloop"
 version = "0.17.0"
 description = "Fast implementation of asyncio event loop on top of libuv"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.extras]
@@ -405,10 +405,13 @@ dev = ["Cython (>=0.29.32,<0.30.0)", "Sphinx (>=4.1.2,<4.2.0)", "aiohttp", "flak
 docs = ["Sphinx (>=4.1.2,<4.2.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)", "sphinxcontrib-asyncio (>=0.3.0,<0.4.0)"]
 test = ["Cython (>=0.29.32,<0.30.0)", "aiohttp", "flake8 (>=3.9.2,<3.10.0)", "mypy (>=0.800)", "psutil", "pyOpenSSL (>=22.0.0,<22.1.0)", "pycodestyle (>=2.7.0,<2.8.0)"]
 
+[extras]
+speedups = ["uvloop"]
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11"
-content-hash = "742d0b592f548c092b79cec6ba8663ebcef340bc0631e2c33b064bb6d30be320"
+content-hash = "fee1654a2d7ec0deaced03757348946b18d632f053ab0c9536d017557f3fcac8"
 
 [metadata.files]
 anyio = [
