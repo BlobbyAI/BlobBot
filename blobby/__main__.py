@@ -11,10 +11,13 @@ async def start(update: Update, _) -> None:
 
 
 async def blob(update: Update, _) -> None:
+    user = update.message.from_user
+    input_text = update.message.text
+
     generated_text = openai.Completion.create(
         model = openai_profile.model,
-        prompt = update.message.text,
-        user = str(update.message.from_user.id),
+        prompt = f"{user.first_name}:{input_text}",
+        user = str(user.id),
         **OPENAI_OPTS
     )
 
