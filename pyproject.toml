@@ -9,6 +9,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 openai = "^0.25.0"
+python-telegram-bot = {git = "https://github.com/python-telegram-bot/python-telegram-bot.git", rev = "v20.0a4"}
+uvloop = "^0.17.0"
 
 
 [build-system]
