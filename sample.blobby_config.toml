@@ -1,0 +1,5 @@
+[openai-chat]
+name = "blob"
+prompt = "blob is really friendly and jokes a lot"
+context = 2
+model = 3
