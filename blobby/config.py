@@ -14,6 +14,7 @@ class AIProfile:
         model: name of the model (see https://beta.openai.com/docs/models/gpt-3).
         chat_buffer_size: Buffer for the amount of chats to be kept in memory.
         conversation_buffer_size: Buffer for the amount of conversations of chats to be kept in memory.
+        retry_on_fail: retry if it fails to generate text
 
     Warning:
         keep the prompt short, as it counts towards every single API request.
@@ -24,15 +25,17 @@ class AIProfile:
             name: 'marv',
             prompt: 'marv is quite rude',
             model: 'text-davinci-002',
-            conversation_buffer_size: 4,
             chat_buffer_size: 2,
+            conversation_buffer_size: 4,
+            retry_on_fail: True,
         }
         blob_preset = {
             name: 'blob',
             prompt: 'blob is really friendly and jokes a lot',
             model: 'text-davinci-002',
+            chat_buffer_size: 5,
             conversation_buffer_size: 6,
-            chat_buffer_size=5,
+            retry_on_fail: True,
         }
     """
 
@@ -41,6 +44,7 @@ class AIProfile:
     model: str
     chat_buffer_size: int = attrs.field(validator = attrs.validators.ge(1))
     conversation_buffer_size: int = attrs.field(validator = attrs.validators.ge(4))
+    retry_on_fail: bool
 
 
 def from_toml(tomlfile: BinaryIO) -> AIProfile:

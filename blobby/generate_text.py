@@ -57,21 +57,44 @@ def _generate_prompt(profile_text: str, conversation: Iterable[_Conversation]) -
     return prompt
 
 
+def _create_text(model: str, prompt: str, name: str, user_id: str, *args, **kwargs) -> Optional[str]:
+    generated_text = openai.Completion.create(
+        model = model,
+        prompt = prompt,
+        suffix = f"\n{name}:",
+        user = user_id,
+        **OPENAI_OPTS
+    )
+    # n = choices = 1
+    return generated_text["choices"][0]["text"]
+
+
 def generate_text(input_text: str, chat_id: int, user_id: int, username: str) -> str:
     input_conversation = _Conversation(username, input_text)
     _conversation_cacher.add_conversation(chat_id, input_conversation)
     prompt = _generate_prompt(profile.prompt, _conversation_cacher.get_conversation(chat_id))
 
-    generated_text = openai.Completion.create(
-        model = profile.model,
-        prompt = prompt,
-        suffix = f"\n{profile.name}:",
-        user = str(user_id),
-        **OPENAI_OPTS
+    generated_text = _create_text(
+        profile.model,
+        prompt,
+        profile.name,
+        str(user_id),
+        **OPENAI_OPTS,
     )
-    # n = choices = 1
-    generated_text = generated_text["choices"][0]["text"]
-    
+
+    if profile.retry_on_fail and not generated_text or not generated_text.isprintable():
+        while True:
+            print("try")
+            generated_text = _create_text(
+                profile.model,
+                prompt,
+                profile.name,
+                str(user_id),
+                **OPENAI_OPTS,
+            )
+            if generated_text:
+                break
+
     generated_conversation = _generate_prompt(profile.prompt, _Conversation(profile.name, generated_text))
     _conversation_cacher.add_conversation(chat_id, generated_conversation)
 
