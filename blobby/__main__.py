@@ -1,9 +1,8 @@
-import openai
 from telegram import Update
 from telegram.ext import filters, CommandHandler, MessageHandler
 
-from blobby import blob_app, openai_profile
-from blobby.constants import OPENAI_OPTS
+from blobby.generate_text import generate_text
+from blobby import blob_app
 
 
 async def start(update: Update, _) -> None:
@@ -11,16 +10,12 @@ async def start(update: Update, _) -> None:
 
 
 async def blob(update: Update, _) -> None:
-    user = update.message.from_user
-    input_text = update.message.text
+    message = update.message
+    input_text = message.text
+    user = message.from_user
+    chat = message.chat
 
-    generated_text = openai.Completion.create(
-        model = openai_profile.model,
-        prompt = f"{user.first_name}:{input_text}",
-        user = str(user.id),
-        **OPENAI_OPTS
-    )
-
+    generated_text = generate_text(input_text, chat.id, user.id, user.username)
     await update.message.reply_text(generated_text)
 
 
@@ -31,4 +26,4 @@ if __name__ == '__main__':
     blob_app.add_handler(start_handler)
     blob_app.add_handler(blob_handler)
 
-    blob_app.run_polling()
+    blob_app.run_polling(allowed_updates=["message"], drop_pending_updates=True)
