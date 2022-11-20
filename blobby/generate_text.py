@@ -22,9 +22,10 @@ class _Conversation(NamedTuple):
 class _CachedConversation:
     """
     Cached Conversation caches x amount of messages from y amount of chats
-    chat_buffer_size must be greater or equal to 1
-    conversation_buffer_size must be greater than 4 and it must be divisible by 2
+    chat_buffer_size must be greater than or equal to 1
+    conversation_buffer_size must be greater than or equal to 4
     """
+
     def __init__(self, chat_buffer_size: int, conversation_buffer_size: int) -> Self:
         self._conversation_buffer_size = conversation_buffer_size
         self.cached_chat = TTLCache(
