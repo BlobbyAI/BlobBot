@@ -8,7 +8,7 @@ from cachetools import TTLCache
 import openai
 
 from blobby import openai_profile as profile
-from blobby.constants import OPENAI_OPTS, CONVERSATION_CACHE_TTL_HOURS
+from blobby.constants import CONVERSATION_CACHE_TTL_HOURS, GENERATION_RETRY_LIMIT, OPENAI_OPTS
 
 
 class _Conversation(NamedTuple):
@@ -66,7 +66,8 @@ def _create_text(model: str, prompt: str, name: str, user_id: str, *args, **kwar
         **OPENAI_OPTS
     )
     # n = choices = 1
-    return generated_text["choices"][0]["text"]
+    generated_text = generated_text["choices"][0]["text"]
+    return generated_text.strip()
 
 
 def generate_text(input_text: str, chat_id: int, user_id: int, username: str) -> str:
@@ -82,9 +83,8 @@ def generate_text(input_text: str, chat_id: int, user_id: int, username: str) ->
         **OPENAI_OPTS,
     )
 
-    if profile.retry_on_fail and not generated_text or not generated_text.isprintable():
-        while True:
-            print("try")
+    if profile.retry_on_fail and not generated_text:
+        for _ in range(GENERATION_RETRY_LIMIT):
             generated_text = _create_text(
                 profile.model,
                 prompt,
@@ -94,6 +94,8 @@ def generate_text(input_text: str, chat_id: int, user_id: int, username: str) ->
             )
             if generated_text:
                 break
+        else:
+            return "[ERR]: retry limit reached."
 
     generated_conversation = _generate_prompt(profile.prompt, _Conversation(profile.name, generated_text))
     _conversation_cacher.add_conversation(chat_id, generated_conversation)
