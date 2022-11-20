@@ -17,13 +17,13 @@ def _generate_prompt(profile_text: str, conversation: Iterable[Conversation]) ->
     return prompt
 
 
-def _create_text(model: str, prompt: str, name: str, user_id: int, *args, **kwargs) -> Optional[str]:
+def _create_text(model: str, prompt: str, name: str, user_id: int) -> Optional[str]:
     generated_text = openai.Completion.create(
         model = model,
         prompt = prompt,
-        suffix = f"\n{name}:",
+        suffix = f"\n{name}: ",
         user = str(user_id),
-        **OPENAI_OPTS
+        **OPENAI_OPTS,
     )
     # n = choices = 1
     generated_text = generated_text["choices"][0]["text"]
@@ -35,25 +35,13 @@ def generate_text(input_text: str, chat_id: int, user_id: int, username: str) ->
     _conversation_cacher.add_conversation(chat_id, input_conversation)
     prompt = _generate_prompt(profile.prompt, _conversation_cacher.get_conversation(chat_id))
 
-    generated_text = _create_text(
-        profile.model,
-        prompt,
-        profile.name,
-        user_id,
-        **OPENAI_OPTS,
-    )
+    generated_text = _create_text(profile.model, prompt, profile.name, user_id)
 
     if profile.retry_on_fail and not generated_text:
         for _ in range(GENERATION_RETRY_LIMIT):
-            generated_text = _create_text(
-                profile.model,
-                prompt,
-                profile.name,
-                user_id,
-                **OPENAI_OPTS,
-            )
-            if generated_text:
+            if generated_text := _create_text(profile.model, prompt, profile.name, user_id):
                 break
+
         else:
             return "[ERR]: retry limit reached."
 
