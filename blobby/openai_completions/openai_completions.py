@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+import textwrap
 from typing import Self
 
 import openai
@@ -18,18 +19,24 @@ class OpenAICompletions:
 
 
     @staticmethod
-    def _generate_prompt(profile_text: str, conversation: Iterable[Conversation]) -> str:
-        prompt = f"{profile_text}\n\n"
-        prompt += '\n'.join(str(user) for user in conversation)
+    def _generate_prompt(name: str, personality: str, conversation: Iterable[Conversation]) -> str:
+        prompt = textwrap.dedent(f"""\
+            The following is a conversation with {name}.
+            {name} is {personality}.
+
+        """)
+
+        prompt += '\n'.join(str(conv) for conv in conversation)
+        prompt += f"\n{name}:"
+
         return prompt
 
 
     @staticmethod
-    def _create_text(profile: AIProfile, prompt: str, user_id: int) -> str:
+    def _create_text(model: str, prompt: str, user_id: int) -> str:
         created_text = openai.Completion.create(
-            model = profile.model,
+            model = model,
             prompt = prompt,
-            suffix = f"\n{profile.name}: ",
             user = str(user_id),
             **OPENAI_OPTS,
         )
@@ -43,11 +50,12 @@ class OpenAICompletions:
         self.conversation_cacher.add_conversation(chat_id, input_conversation)
 
         prompt = self._generate_prompt(
-            self.profile.prompt,
+            self.profile.name,
+            self.profile.personality,
             self.conversation_cacher.get_conversation(chat_id),
         )
 
-        created_text = self._create_text(self.profile, prompt, user_id)
+        created_text = self._create_text(self.profile.model, prompt, user_id)
 
         if self.profile.retry_on_fail and not created_text:
             for _ in range(CREATION_RETRY_LIMIT):
