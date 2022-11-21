@@ -1,3 +1,4 @@
+import argparse
 from dataclasses import dataclass
 import tomllib
 from typing import BinaryIO
@@ -15,6 +16,12 @@ class AIProfile:
         chat_buffer_size: Buffer for the amount of chats to be kept in memory.
         conversation_buffer_size: Buffer for the amount of conversations of chats to be kept in memory.
         retry_on_fail: retry if it fails to generate text
+
+    Conversation Caching:
+        caches x amount of messages from y amount of chats
+        chat_buffer_size must be greater than or equal to 1
+        conversation_buffer_size must be greater than or equal to 4
+
 
     Warning:
         keep the prompt short, as it counts towards every single API request.
@@ -50,3 +57,17 @@ class AIProfile:
 def from_toml(tomlfile: BinaryIO) -> AIProfile:
     toml = tomllib.load(tomlfile)
     return AIProfile(**toml["openai-profile"])
+
+
+def config_argparse() -> AIProfile:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-c",
+        "--config",
+        help = "path to the config.toml file",
+        type = argparse.FileType("rb"),
+        required = True,
+    )
+    args = parser.parse_args()
+
+    return from_toml(args.config)
