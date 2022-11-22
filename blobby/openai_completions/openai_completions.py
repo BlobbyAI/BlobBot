@@ -22,7 +22,7 @@ class OpenAICompletions:
     def _generate_prompt(name: str, personality: str, conversation: Iterable[Conversation]) -> str:
         prompt = textwrap.dedent(f"""\
             The following is a conversation with {name}.
-            {name} is {personality}.
+            {name} is {personality}
 
         """)
 
