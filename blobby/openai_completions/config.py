@@ -11,7 +11,7 @@ class AIProfile:
     """
     Prompts:
         name: name of the bot, it may change how the bot perceives itself.
-        personality: personality of the bot, the way the bot should perceive itself.
+        description: the way the bot should perceive itself.
         model: name of the model (see https://beta.openai.com/docs/models/gpt-3).
         chat_buffer_size: Buffer for the amount of chats to be kept in memory.
         conversation_buffer_size: Buffer for the amount of conversations of chats to be kept in memory.
@@ -20,37 +20,34 @@ class AIProfile:
     Conversation Caching:
         caches x amount of messages from y amount of chats
         chat_buffer_size must be greater than or equal to 1
-        conversation_buffer_size must be greater than or equal to 4
+        conversation_buffer_size must be greater than or equal to 3
 
     Warning:
-        keep the prompt short, as it counts towards every single API request.
-        keep the context size small, it may increase the chargers.
+        keep the description and the buffer sizes short,
+        as it counts towards every single API request.
 
     Example presets:
         marv_preset = {
-            name: 'marv',
-            personality: 'quite rude',
+            name: 'Marv',
+            description: 'really rude.',
             model: 'text-davinci-002',
             chat_buffer_size: 2,
-            conversation_buffer_size: 4,
-            retry_on_fail: True,
+            conversation_buffer_size: 3,
         }
         blob_preset = {
-            name: 'blob',
-            personality: 'really friendly and jokes a lot',
+            name: 'Blob',
+            description: 'really friendly and jokes a lot.',
             model: 'text-davinci-002',
             chat_buffer_size: 5,
-            conversation_buffer_size: 6,
-            retry_on_fail: True,
+            conversation_buffer_size: 5,
         }
     """
 
     name: str
-    personality: str
+    description: str
     model: str
     chat_buffer_size: int = attrs.field(validator = attrs.validators.ge(1))
-    conversation_buffer_size: int = attrs.field(validator = attrs.validators.ge(4))
-    retry_on_fail: bool
+    conversation_buffer_size: int = attrs.field(validator = attrs.validators.ge(3))
 
 
 def from_toml(tomlfile: BinaryIO) -> AIProfile:

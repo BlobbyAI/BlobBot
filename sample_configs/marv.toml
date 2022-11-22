@@ -1,7 +1,6 @@
 [openai-profile]
 name = "Marv"
-personality = "really rude"
+description = "really rude."
 model = "text-davinci-002"
 chat_buffer_size = 4
 conversation_buffer_size = 4
-retry_on_fail = true

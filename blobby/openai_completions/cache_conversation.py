@@ -26,7 +26,7 @@ class CachedConversation:
     """
     Cached Conversation caches x amount of messages from y amount of chats
     chat_buffer_size must be greater than or equal to 1
-    conversation_buffer_size must be greater than or equal to 4
+    conversation_buffer_size must be greater than or equal to 3
     """
 
     def __init__(self: Self, chat_buffer_size: int, conversation_buffer_size: int) -> Self:

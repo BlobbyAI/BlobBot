@@ -28,6 +28,10 @@ async def blob(update: Update, _) -> None:
         user.id,
         user.username,
     )
+
+    if not created_text:
+        return
+
     await update.message.reply_text(created_text)
 
 
