@@ -9,11 +9,12 @@ from blobby.openai_completions import OpenAICompletions
 
 
 if __name__ == "__main__":
-    openai_completions = OpenAICompletions(config_argparse())
+    config = config_argparse()
+    openai_completions = OpenAICompletions(config)
 
 
 async def start(update: Update, _) -> None:
-    await update.message.reply_text("I'm a friendly blob and I respond to your text messages!")
+    await update.message.reply_text(f"Hi! I'm {config.name} and I respond to your text messages!")
 
 
 async def blob(update: Update, _) -> None:
